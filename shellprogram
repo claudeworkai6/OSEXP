@@ -1,0 +1,38 @@
+//arithmetic 
+echo "Enter 2 numbers"
+read a b
+echo "1:+ 2:- 3:* 4:/"
+read ch
+
+case $ch in
+1) echo $((a+b));;
+2) echo $((a-b));;
+3) echo $((a*b));;
+4) echo $((a/b));;
+esac
+//multiplication table 
+echo "Enter number"
+read n
+
+for i in {1..10}
+do
+ echo "$n x $i = $((n*i))"
+done
+//factorial 
+echo "Enter number"
+read n
+
+for i in {1..10}
+do
+ echo "$n x $i = $((n*i))"
+done
+//leap year
+echo "Enter year"
+read y
+
+if (( (y%4==0 && y%100!=0) || y%400==0 ))
+then
+ echo "Leap Year"
+else
+ echo "Not Leap Year"
+fi
