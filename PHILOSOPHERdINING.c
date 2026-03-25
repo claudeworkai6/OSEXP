@@ -26,6 +26,7 @@ void* philosopher(void* arg) {
     
     printf("Philosopher %d eating\n", id);
     sleep(2);
+    printf("Philosopher %d has finished eating\n", id);
     
     pthread_mutex_unlock(&mutex[f1]);
     pthread_mutex_unlock(&mutex[f2]);
