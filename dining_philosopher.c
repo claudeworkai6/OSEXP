@@ -1,31 +1,31 @@
-#include<stdio.h>
-#define PROCESSES 5
-#define RESOURCES 3
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
 
-int main(){
- int allocation[PROCESSES][RESOURCES]={{0,1,0},{2,0,0},{3,0,2},{2,1,1},{0,0,2}};
- int max[PROCESSES][RESOURCES]={{7,5,3},{3,2,2},{9,0,2},{2,2,2},{4,3,3}};
- int available[RESOURCES]={3,3,2},need[PROCESSES][RESOURCES],finish[PROCESSES]={0},work[RESOURCES],safeSeq[PROCESSES];
- int i,j,k,completed=0;
+#define N 5
+pthread_mutex_t fork[N];
 
- for(i=0;i<PROCESSES;i++)
- for(j=0;j<RESOURCES;j++)
-  need[i][j]=max[i][j]-allocation[i][j];
+void* philosopher(void* arg) {
+    int id = (int)(long)arg;
+    printf("P%d thinking\n", id);
+    sleep(1);
+    
+    int f1 = id, f2 = (id+1) % N;
+    if(f1 > f2) { int t=f1; f1=f2; f2=t; }
+    
+    pthread_mutex_lock(&fork[f1]);
+    pthread_mutex_lock(&fork[f2]);
+    printf("P%d eating\n", id);
+    sleep(2);
+    pthread_mutex_unlock(&fork[f1]);
+    pthread_mutex_unlock(&fork[f2]);
+    return NULL;
+}
 
- for(i=0;i<RESOURCES;i++) work[i]=available[i];
-
- while(completed<PROCESSES){
-  int found=0;
-  for(i=0;i<PROCESSES;i++) if(!finish[i]){
-   for(j=0;j<RESOURCES && need[i][j]<=work[j];j++);
-   if(j==RESOURCES){
-    for(k=0;k<RESOURCES;k++) work[k]+=allocation[i][k];
-    safeSeq[completed++]=i; finish[i]=1; found=1;
-   }
-  }
-  if(!found){ printf("NOT SAFE"); return 0; }
- }
-
- printf("SAFE\n");
- for(i=0;i<PROCESSES;i++) printf("P%d ",safeSeq[i]);
+int main() {
+    pthread_t t[N];
+    for(int i=0; i<N; i++) pthread_mutex_init(&fork[i], NULL);
+    for(int i=0; i<N; i++) pthread_create(&t[i], NULL, philosopher, (void*)(long)i);
+    for(int i=0; i<N; i++) pthread_join(t[i], NULL);
+    return 0;
 }
