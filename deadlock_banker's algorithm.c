@@ -3,33 +3,29 @@
 #define R 3
 
 int main(){
- int alloc[P][R]={{0,1,0},{2,0,0},{3,0,2},{2,1,1},{0,0,2}};
- int max[P][R]={{7,5,3},{3,2,2},{9,0,2},{2,2,2},{4,3,3}};
- int avail[R]={3,3,2};
-
- int need[P][R],finish[P]={0},work[R],i,j,k,c=0;
+ int a[P][R]={{0,1,0},{2,0,0},{3,0,2},{2,1,1},{0,0,2}};
+ int m[P][R]={{7,5,3},{3,2,2},{9,0,2},{2,2,2},{4,3,3}};
+ int av[R]={3,3,2},n[P][R],f[P]={0},w[R],s[P];
+ int i,j,k,c=0;
 
  for(i=0;i<P;i++)
  for(j=0;j<R;j++)
-  need[i][j]=max[i][j]-alloc[i][j];
+  n[i][j]=m[i][j]-a[i][j];
 
- for(i=0;i<R;i++) work[i]=avail[i];
+ for(i=0;i<R;i++) w[i]=av[i];
 
  while(c<P){
-  int f=0;
-  for(i=0;i<P;i++){
-   if(!finish[i]){
-    for(j=0;j<R;j++)
-     if(need[i][j]>work[j]) break;
-
-    if(j==R){
-     for(k=0;k<R;k++) work[k]+=alloc[i][k];
-     finish[i]=1; c++; f=1;
-    }
+  int ok=0;
+  for(i=0;i<P;i++) if(!f[i]){
+   for(j=0;j<R && n[i][j]<=w[j];j++);
+   if(j==R){
+    for(k=0;k<R;k++) w[k]+=a[i][k];
+    s[c++]=i; f[i]=1; ok=1;
    }
   }
-  if(!f){ printf("UNSAFE"); return 0; }
+  if(!ok){ printf("NOT SAFE"); return 0; }
  }
 
- printf("SAFE");
+ printf("SAFE\n");
+ for(i=0;i<P;i++) printf("P%d ",s[i]);
 }
